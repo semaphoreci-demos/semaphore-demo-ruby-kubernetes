@@ -1,0 +1,34 @@
+version: v1.0
+name: Deploy to Kubernetes
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Deploy to Kubernetes
+    task:
+      secrets:
+        - name: do-k8s
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/dok8s.yaml
+      jobs:
+      - name: Deploy
+        commands:
+          - checkout
+          - kubectl get nodes
+          - kubectl get pods
+          - envsubst < deployment.yml | tee deployment.yml
+          - kubectl apply -f deployment.yml
+
+  - name: Tag latest release
+    task:
+      secrets:
+        - name: markoa-dockerhub
+      jobs:
+      - name: docker tag latest
+        commands:
+          - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+          - docker pull semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+          - docker tag semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID semaphoredemos/semaphore-demo-ruby-kubernetes:latest
+          - docker push semaphoredemos/semaphore-demo-ruby-kubernetes:latest
