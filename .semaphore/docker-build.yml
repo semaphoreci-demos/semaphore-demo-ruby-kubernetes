@@ -22,3 +22,7 @@ blocks:
           - docker build --cache-from semaphoredemos/semaphore-demo-ruby-kubernetes:latest -t semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID .
           - docker images
           - docker push semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+
+promotions:
+  - name: Deploy to Kubernetes
+    pipeline_file: deploy-k8s.yml
