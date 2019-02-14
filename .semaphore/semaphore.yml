@@ -25,3 +25,9 @@ blocks:
             - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
             - bundle install --deployment --path .bundle
             - bundle exec rspec
+
+promotions:
+  - name: Dockerize
+    pipeline_file: docker-build.yml
+    auto_promote_on:
+      - result: passed
