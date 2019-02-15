@@ -48,4 +48,4 @@ curl localhost
 
 Copyright (c) 2019 Rendered Text
 
-Distributed under the MIT License. See the file LICENSE.md.
+Distributed under the MIT License. See the file LICENSE.
