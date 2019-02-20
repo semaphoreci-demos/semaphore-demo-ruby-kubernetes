@@ -60,9 +60,13 @@ blocks:
 
 # If all tests pass, we move on to build a Docker image.
 # This is a job for a separate pipeline which we link with a promotion.
-# Here we want to run docker build automatically on every branch.
+#
+# What happens outside semaphore.yml will not appear in GitHub pull
+# request status report.
+#
+# In this example we run docker build automatically on every branch.
 # You may want to limit it by branch name, or trigger it manually.
-# For more of such options, see:
+# For more on such options, see:
 # https://docs.semaphoreci.com/article/50-pipeline-yaml#promotions
 promotions:
   - name: Dockerize
