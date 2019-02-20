@@ -1,3 +1,4 @@
+# This pipeline runs after docker-build.yml
 version: v1.0
 name: Deploy to Kubernetes
 agent:
@@ -7,8 +8,14 @@ agent:
 blocks:
   - name: Deploy to Kubernetes
     task:
+      # Mount a secret which defines /home/semaphore/.kube/dok8s.yaml.
+      # By mounting it, we make file available in the job environment.
+      # For info on creating secrets, see:
+      # https://docs.semaphoreci.com/article/66-environment-variables-and-secrets
       secrets:
         - name: do-k8s
+
+      # Define an environment variable which configures kubectl:
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/dok8s.yaml
@@ -18,9 +25,20 @@ blocks:
           - checkout
           - kubectl get nodes
           - kubectl get pods
+
+          # Our deployment.yml instructs Kubernetes to pull container image
+          # named semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+          #
+          # envsubst is a tool which will replace $SEMAPHORE_WORKFLOW_ID with
+          # its current value. The same variable was used in docker-build.yml
+          # pipeline to tag and push a container image.
           - envsubst < deployment.yml | tee deployment.yml
+
+          # Perform declarative deployment:
           - kubectl apply -f deployment.yml
 
+  # If deployment to production succeeded, let's create a new version of
+  # our `latest` Docker image.
   - name: Tag latest release
     task:
       secrets:
