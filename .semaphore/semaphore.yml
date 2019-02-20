@@ -1,19 +1,46 @@
+# This pipeline is the entry point of Semaphore.
+
+# Use the latest stable version of Semaphore 2.0 YML syntax:
 version: v1.0
+
+# Name of your pipeline. In this example we connect multiple pipelines with
+# promotions, so it helps to differentiate what's the job of each.
 name: CI
+
+# An agent defines the environment in which your code runs.
+# It is a combination of one of available machine types and operating
+# system images. See:
+# https://docs.semaphoreci.com/article/20-machine-types
+# https://docs.semaphoreci.com/article/32-ubuntu-1804-image
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
 
+# Blocks are the heart of a pipeline and are executed sequentially.
+# Each block has a task that defines one or more jobs. Jobs define the
+# commands to execute.
+# See https://docs.semaphoreci.com/article/62-concepts
 blocks:
   - name: Install dependencies
     task:
       jobs:
         - name: bundle install
           commands:
+            # Checkout code from Git repository. This step is mandatory if the
+            # job is to work with your code.
+            # Optionally you may use --use-cache flag to avoid roundtrip to
+            # remote repository.
+            # See https://docs.semaphoreci.com/article/54-toolbox-reference#libcheckout
             - checkout
+
+            # Restore dependencies from cache, command won't fail if it's
+            # missing.
+            # More on caching: https://docs.semaphoreci.com/article/54-toolbox-reference#cache
             - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
             - bundle install --deployment --path .bundle
+            # Store the latest version of dependencies in cache,
+            # to be used in next blocks and future workflows:
             - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) .bundle
 
   - name: Tests
@@ -23,9 +50,20 @@ blocks:
           commands:
             - checkout
             - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
+            # Bundler requires `install` to run even though cache has been
+            # restored, but generally this is not the case with other package
+            # managers. Installation will not actually run and command will
+            # finish quickly:
             - bundle install --deployment --path .bundle
+            # Run unit tests:
             - bundle exec rspec
 
+# If all tests pass, we move on to build a Docker image.
+# This is a job for a separate pipeline which we link with a promotion.
+# Here we want to run docker build automatically on every branch.
+# You may want to limit it by branch name, or trigger it manually.
+# For more of such options, see:
+# https://docs.semaphoreci.com/article/50-pipeline-yaml#promotions
 promotions:
   - name: Dockerize
     pipeline_file: docker-build.yml
