@@ -27,7 +27,7 @@ blocks:
           - kubectl get pods
 
           # Our deployment.yml instructs Kubernetes to pull container image
-          # named semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+          # named $DOCKER_USERNAME/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
           #
           # envsubst is a tool which will replace $SEMAPHORE_WORKFLOW_ID with
           # its current value. The same variable was used in docker-build.yml
@@ -47,6 +47,6 @@ blocks:
       - name: docker tag latest
         commands:
           - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-          - docker pull semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
-          - docker tag semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID semaphoredemos/semaphore-demo-ruby-kubernetes:latest
-          - docker push semaphoredemos/semaphore-demo-ruby-kubernetes:latest
+          - docker pull "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+          - docker tag "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest
+          - docker push "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest
