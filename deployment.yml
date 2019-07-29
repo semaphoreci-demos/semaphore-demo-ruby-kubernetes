@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: semaphore-demo-ruby-kubernetes
-          image: semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+          image: $DOCKER_USERNAME/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
 
 ---
 
