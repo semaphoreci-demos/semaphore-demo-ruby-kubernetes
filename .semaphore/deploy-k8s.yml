@@ -14,6 +14,7 @@ blocks:
       # https://docs.semaphoreci.com/article/66-environment-variables-and-secrets
       secrets:
         - name: do-k8s
+        - name: dockerhub
 
       # Define an environment variable which configures kubectl:
       env_vars:
