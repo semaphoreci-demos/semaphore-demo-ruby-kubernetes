@@ -25,7 +25,7 @@ The CI/CD pipeline is defined in `.semaphore` directory and looks like this:
 To run the microservice:
 
 ```
-bundle install --path .bundle
+bundle install --path vendor/bundle
 bundle exec rackup
 ```
 
