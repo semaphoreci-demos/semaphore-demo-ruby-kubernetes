@@ -19,7 +19,7 @@ blocks:
       # Define an environment variable which configures kubectl:
       env_vars:
         - name: KUBECONFIG
-          value: /home/semaphore/.kube/dok8s.yaml
+          value: /home/dadohp/project/.kube/config-eks #/home/semaphore/.kube/dok8s.yaml
       jobs:
       - name: Deploy
         commands:
