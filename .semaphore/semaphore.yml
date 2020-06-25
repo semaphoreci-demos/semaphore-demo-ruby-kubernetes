@@ -13,7 +13,8 @@ blocks:
           commands:
             - checkout
             - cache restore
-            - bundle install --deployment --path ve
+            - bundle install --deployment --path vendor/bundle
+            - cache store
   - name: Tests
     dependencies:
       - Install dependencies
