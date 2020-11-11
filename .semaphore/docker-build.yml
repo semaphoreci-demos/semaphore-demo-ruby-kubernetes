@@ -32,7 +32,7 @@ blocks:
           # unique image tag.
           # For a list of available environment variables on Semaphore, see:
           # https://docs.semaphoreci.com/article/12-environment-variables
-          - docker build --cache-from "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest -t "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID .
+          - docker build --cache-from "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest -t "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID -f Dockerfile.ci .
           - docker images
 
           # Push a new image to Docker Hub container registry:
