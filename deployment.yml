@@ -12,9 +12,11 @@ spec:
       labels:
         app: semaphore-demo-ruby-kubernetes
     spec:
+      imagePullSecrets:
+      - name: dockerhub
       containers:
-        - name: semaphore-demo-ruby-kubernetes
-          image: $DOCKER_USERNAME/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+      - name: semaphore-demo-ruby-kubernetes
+        image: $DOCKER_USERNAME/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
 
 ---
 
