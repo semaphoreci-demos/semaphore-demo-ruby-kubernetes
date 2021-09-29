@@ -44,6 +44,11 @@ curl localhost
 > hello world :))
 ```
 
+## Additional documentation
+
+- [CI/CD for Microservices on DigitalOcean Kubernetes](https://semaphoreci.com/blog/cicd-microservices-digitalocean-kubernetes)
+- [CI/CD for Microservices on Kubernetes#](https://docs.semaphoreci.com/examples/ci-cd-for-microservices-on-kubernetes)
+
 ## License
 
 Copyright (c) 2019 Rendered Text
