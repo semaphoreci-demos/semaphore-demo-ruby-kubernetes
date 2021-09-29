@@ -1,5 +1,7 @@
 # Semaphore CI/CD demo for Kubernetes
 
+[![Build Status](https://semaphore-demos.semaphoreci.com/badges/semaphore-demo-ruby-kubernetes-eins/branches/master.svg)](https://semaphore-demos.semaphoreci.com/projects/semaphore-demo-ruby-kubernetes-eins)
+
 This is an example application and CI/CD pipeline showing how to build, test and
 deploy a microservice to Kubernetes using Semaphore 2.0.
 
