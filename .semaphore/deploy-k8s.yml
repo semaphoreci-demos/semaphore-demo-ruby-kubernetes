@@ -1,4 +1,3 @@
-# This pipeline runs after docker-build.yml
 version: v1.0
 name: Deploy to Kubernetes
 agent:
@@ -8,46 +7,28 @@ agent:
 blocks:
   - name: Deploy to Kubernetes
     task:
-      # Mount a secret which defines /home/semaphore/.kube/dok8s.yaml.
-      # By mounting it, we make file available in the job environment.
-      # For info on creating secrets, see:
-      # https://docs.semaphoreci.com/article/66-environment-variables-and-secrets
       secrets:
         - name: do-k8s
         - name: dockerhub
-
-      # Define an environment variable which configures kubectl:
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/dok8s.yaml
       jobs:
-      - name: Deploy
-        commands:
-          - checkout
-          - kubectl get nodes
-          - kubectl get pods
-
-          # Our deployment.yml instructs Kubernetes to pull container image
-          # named $DOCKER_USERNAME/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
-          #
-          # envsubst is a tool which will replace $SEMAPHORE_WORKFLOW_ID with
-          # its current value. The same variable was used in docker-build.yml
-          # pipeline to tag and push a container image.
-          - envsubst < deployment.yml | tee _deploy.yml
-
-          # Perform declarative deployment:
-          - kubectl apply -f _deploy.yml
-
-  # If deployment to production succeeded, let's create a new version of
-  # our `latest` Docker image.
+        - name: Deploy
+          commands:
+            - checkout
+            - kubectl get nodes
+            - kubectl get pods
+            - envsubst < deployment.yml | tee _deploy.yml
+            - kubectl apply -f _deploy.yml
   - name: Tag latest release
     task:
       secrets:
         - name: dockerhub
       jobs:
-      - name: docker tag latest
-        commands:
-          - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-          - docker pull "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
-          - docker tag "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest
-          - docker push "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest
+        - name: docker tag latest
+          commands:
+            - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+            - 'docker pull "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID'
+            - 'docker tag "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest'
+            - 'docker push "${DOCKER_USERNAME}"/semaphore-demo-ruby-kubernetes:latest'
