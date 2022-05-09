@@ -10,9 +10,7 @@ blocks:
       secrets:
         - name: do-k8s
         - name: dockerhub
-      env_vars:
-        - name: KUBECONFIG
-          value: /home/semaphore/.kube/dok8s.yaml
+      env_vars: []
       jobs:
         - name: Deploy
           commands:
