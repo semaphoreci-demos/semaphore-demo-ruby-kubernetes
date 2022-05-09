@@ -53,6 +53,6 @@ curl localhost
 
 ## License
 
-Copyright (c) 2019 Rendered Text
+Copyright (c) 2022 Rendered Text
 
 Distributed under the MIT License. See the file LICENSE.
