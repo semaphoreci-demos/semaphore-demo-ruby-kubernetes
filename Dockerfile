@@ -1,4 +1,4 @@
-FROM ruby:2.7
+FROM ruby:3.1
 
 RUN apt-get update -qq && apt-get install -y build-essential
 
@@ -7,7 +7,8 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
 ADD Gemfile* $APP_HOME/
-RUN bundle install --without development test
+RUN bundle config set deployment 'true'
+RUN bundle install --path vendor/bundle
 
 ADD . $APP_HOME
 
