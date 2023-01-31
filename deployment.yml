@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: apps/v1 #study purpose
 kind: Deployment
 metadata:
   name: semaphore-demo-ruby-kubernetes
